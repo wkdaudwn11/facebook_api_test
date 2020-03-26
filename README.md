@@ -2,5 +2,9 @@
 
 ### config/facebook.js
 
-> export const accessToken = [Your AccessToken]  
-> export const accountID = [Your AccountID]
+<pre>
+<code>
+export const accessToken = [Your AccessToken]
+export const accountID = [Your AccountID]
+</code>
+</pre>
