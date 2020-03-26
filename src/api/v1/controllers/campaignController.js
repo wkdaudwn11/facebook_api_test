@@ -2,6 +2,40 @@ const adsSdk = require("facebook-nodejs-business-sdk");
 import { accessToken, accountID } from "config/facebook";
 
 module.exports = {
+  /** 캠페인 등록 */
+  createCampaign: async (req, res) => {
+    const { name } = req.body;
+    const api = adsSdk.FacebookAdsApi.init(accessToken);
+    const showDebugingInfo = true;
+    if (showDebugingInfo) {
+      api.setDebug(true);
+    }
+
+    const AdAccount = adsSdk.AdAccount;
+    const Campaign = adsSdk.Campaign;
+    const account = new AdAccount(accountID);
+
+    account
+      .createCampaign([], {
+        [Campaign.Fields.name]: name,
+        [Campaign.Fields.status]: Campaign.Status.paused,
+        [Campaign.Fields.objective]: Campaign.Objective.page_likes,
+        [Campaign.Fields.special_ad_category]: "NONE"
+      })
+      .then(campaign => {
+        res.status(200).json({
+          status: "0000",
+          message: null,
+          campaign
+        });
+      })
+      .catch(error => {
+        res.status(400).json({
+          error
+        });
+      });
+  },
+
   /** 캠페인 목록 */
   getCampaignList: async (req, res) => {
     const api = adsSdk.FacebookAdsApi.init(accessToken);
