@@ -4,10 +4,10 @@ const router = express.Router();
 const reportingController = require("api/v1/controllers/reportingController");
 
 /**
- * @route  GET api/v1/facebook/reporting/test
- * @desc   리포팅 테스트
+ * @route  POST api/v1/facebook/reporting
+ * @desc   리포팅 가져오기
  * @access Public
  */
-router.route("/test").get(reportingController.test);
+router.route("/").post(reportingController.getReporting);
 
 module.exports = router;
