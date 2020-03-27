@@ -1,20 +1,31 @@
-const adsSdk = require("facebook-nodejs-business-sdk");
-import { accessToken, accountID } from "config/facebook";
+import { account, AdSet } from "utils/facebookAPI";
 
 module.exports = {
+  /** 애드셋 등록 */
+  createAdSet: async (req, res) => {
+    const fields = [],
+      params = {
+        ...req.body
+      };
+
+    account
+      .createAdSet(fields, params)
+      .then(adset => {
+        res.status(200).json({
+          status: "0000",
+          message: null,
+          adset
+        });
+      })
+      .catch(error => {
+        res.status(400).json({
+          error
+        });
+      });
+  },
+
   /** 애드셋 목록 */
   getAdSetList: async (req, res) => {
-    const api = adsSdk.FacebookAdsApi.init(accessToken);
-    const showDebugingInfo = true;
-    if (showDebugingInfo) {
-      api.setDebug(true);
-    }
-
-    const AdAccount = adsSdk.AdAccount;
-    const AdSet = adsSdk.AdSet;
-    const account = new AdAccount(accountID);
-    const Ad = adsSdk.Ad;
-
     account
       .getAdSets(
         [

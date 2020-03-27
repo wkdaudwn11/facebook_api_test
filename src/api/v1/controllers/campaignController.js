@@ -1,25 +1,15 @@
-const adsSdk = require("facebook-nodejs-business-sdk");
-import { accessToken, accountID } from "config/facebook";
+import { Ad, AdAccount, Campaign, api, account } from "utils/facebookAPI";
 
 module.exports = {
   /** 캠페인 등록 */
   createCampaign: async (req, res) => {
-    const { name } = req.body;
-    const api = adsSdk.FacebookAdsApi.init(accessToken);
-    const showDebugingInfo = true;
-    if (showDebugingInfo) {
-      api.setDebug(true);
-    }
-
-    const AdAccount = adsSdk.AdAccount;
-    const Campaign = adsSdk.Campaign;
-    const account = new AdAccount(accountID);
-
+    const { campaign_name, campaign_status, campaign_kpi } = req.body;
+    // console.log("KPI 목록 >", Campaign.Objective);
     account
       .createCampaign([], {
-        [Campaign.Fields.name]: name,
-        [Campaign.Fields.status]: Campaign.Status.paused,
-        [Campaign.Fields.objective]: Campaign.Objective.page_likes,
+        [Campaign.Fields.name]: campaign_name,
+        [Campaign.Fields.status]: campaign_status,
+        [Campaign.Fields.objective]: campaign_kpi,
         [Campaign.Fields.special_ad_category]: "NONE"
       })
       .then(campaign => {
@@ -38,16 +28,6 @@ module.exports = {
 
   /** 캠페인 목록 */
   getCampaignList: async (req, res) => {
-    const api = adsSdk.FacebookAdsApi.init(accessToken);
-    const showDebugingInfo = true;
-    if (showDebugingInfo) {
-      api.setDebug(true);
-    }
-
-    const AdAccount = adsSdk.AdAccount;
-    const Campaign = adsSdk.Campaign;
-    const account = new AdAccount(accountID);
-
     account
       .getCampaigns(
         [
@@ -107,14 +87,12 @@ module.exports = {
 
   /** 캠페인 수정 */
   updateCampaign: async (req, res) => {
-    const { campaign_id, campaign_name } = req.body;
-
-    adsSdk.FacebookAdsApi.init(accessToken);
-    const Campaign = adsSdk.Campaign;
+    const { campaign_id, campaign_name, campaign_kpi } = req.body;
 
     try {
       await new Campaign(campaign_id, {
-        [Campaign.Fields.name]: campaign_name
+        [Campaign.Fields.name]: campaign_name,
+        [Campaign.Fields.objective]: campaign_kpi
       })
         .update()
         .then(() => {
@@ -143,9 +121,6 @@ module.exports = {
   /** 캠페인 삭제 */
   deleteCampaign: async (req, res) => {
     const { campaign_id } = req.body;
-
-    adsSdk.FacebookAdsApi.init(accessToken);
-    const Campaign = adsSdk.Campaign;
     try {
       new Campaign(campaign_id)
         .delete()
@@ -170,5 +145,37 @@ module.exports = {
         error: "시스템 에러입니다. 관리자에게 문의해주세요."
       });
     }
+  },
+
+  /** 캠페인 상세 */
+  detailCampaign: async (req, res) => {
+    const { campaign_id } = req.body;
+
+    const insightsFields = [
+      "impressions",
+      "frequency",
+      "unique_clicks",
+      "actions",
+      "spend",
+      "cpc"
+    ];
+
+    new Campaign(campaign_id)
+      .getInsights(insightsFields, {})
+      .then(insight => {
+        res.status(200).json({
+          status: "0000",
+          message: null,
+          data: insight
+        });
+      })
+      .catch(error => {
+        const { message, stack } = error;
+        res.status(200).json({
+          status: "9001",
+          message,
+          data: stack
+        });
+      });
   }
 };

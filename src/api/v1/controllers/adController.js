@@ -1,19 +1,8 @@
-const adsSdk = require("facebook-nodejs-business-sdk");
-import { accessToken, accountID } from "config/facebook";
+import { Ad, account } from "utils/facebookAPI";
 
 module.exports = {
   /** 애드 목록 */
   getAdList: async (req, res) => {
-    const api = adsSdk.FacebookAdsApi.init(accessToken);
-    const showDebugingInfo = true;
-    if (showDebugingInfo) {
-      api.setDebug(true);
-    }
-
-    const AdAccount = adsSdk.AdAccount;
-    const Ad = adsSdk.Ad;
-    const account = new AdAccount(accountID);
-
     account
       .getAds(
         [

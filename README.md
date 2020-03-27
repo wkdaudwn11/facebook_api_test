@@ -5,6 +5,7 @@
 <pre>
 <code>
 export const accessToken = [Your AccessToken]
-export const accountID = [Your AccountID]
+export const accountId = [Your AccountId]
+export const bussinessId = [Your BussinessId];
 </code>
 </pre>
