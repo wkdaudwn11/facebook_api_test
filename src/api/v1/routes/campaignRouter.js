@@ -17,4 +17,18 @@ router.route("/").post(campaignController.createCampaign);
  */
 router.route("/list").get(campaignController.getCampaignList);
 
+/**
+ * @route  POST api/v1/facebook/campaign/update
+ * @desc   캠페인 수정
+ * @access Public
+ */
+router.route("/update").post(campaignController.updateCampaign);
+
+/**
+ * @route  POST api/v1/facebook/campaign/delete
+ * @desc   캠페인 삭제
+ * @access Public
+ */
+router.route("/delete").post(campaignController.deleteCampaign);
+
 module.exports = router;

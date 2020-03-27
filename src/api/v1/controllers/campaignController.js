@@ -103,5 +103,72 @@ module.exports = {
           error
         });
       });
+  },
+
+  /** 캠페인 수정 */
+  updateCampaign: async (req, res) => {
+    const { campaign_id, campaign_name } = req.body;
+
+    adsSdk.FacebookAdsApi.init(accessToken);
+    const Campaign = adsSdk.Campaign;
+
+    try {
+      await new Campaign(campaign_id, {
+        [Campaign.Fields.name]: campaign_name
+      })
+        .update()
+        .then(() => {
+          res.status(200).json({
+            status: "0000",
+            message: null,
+            data: null
+          });
+        })
+        .catch(error => {
+          const { message, stack } = error;
+          res.status(200).json({
+            status: "9001",
+            message,
+            data: stack
+          });
+        });
+    } catch (e) {
+      console.log(e);
+      res.status(400).json({
+        error: "시스템 에러입니다. 관리자에게 문의해주세요."
+      });
+    }
+  },
+
+  /** 캠페인 삭제 */
+  deleteCampaign: async (req, res) => {
+    const { campaign_id } = req.body;
+
+    adsSdk.FacebookAdsApi.init(accessToken);
+    const Campaign = adsSdk.Campaign;
+    try {
+      new Campaign(campaign_id)
+        .delete()
+        .then(() => {
+          res.status(200).json({
+            status: "0000",
+            message: null,
+            data: null
+          });
+        })
+        .catch(error => {
+          const { message, stack } = error;
+          res.status(200).json({
+            status: "9001",
+            message,
+            data: stack
+          });
+        });
+    } catch (e) {
+      console.log(e);
+      res.status(400).json({
+        error: "시스템 에러입니다. 관리자에게 문의해주세요."
+      });
+    }
   }
 };
