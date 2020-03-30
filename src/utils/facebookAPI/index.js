@@ -6,6 +6,7 @@ export const AdSet = adsSdk.AdSet;
 export const AdAccount = adsSdk.AdAccount;
 // const Business = adsSdk.Business;
 export const Campaign = adsSdk.Campaign;
+export const AdsPixel = adsSdk.AdsPixel;
 export const api = adsSdk.FacebookAdsApi.init(accessToken);
 export const account = new AdAccount(accountId);
 
